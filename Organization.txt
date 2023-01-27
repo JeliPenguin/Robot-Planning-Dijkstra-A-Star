@@ -1,0 +1,14 @@
+Part 1
+
+Breadth First Depth First:
+- 1 Person
+- Youmna
+
+
+Dijkstra
+- Gui
+
+
+A star
+- Jeffrey
+- Youmna help when finished BFDF
