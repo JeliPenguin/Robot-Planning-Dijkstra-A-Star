@@ -38,12 +38,12 @@ class DijkstraPlanner(PlannerBase):
                 new.put((path_cost, cell))
         self.priority_queue = new
 
-    # This method pushes a cell onto the queue Q. Its implementation
-    # depends upon the type of search algorithm used. If necessary,
-    # (self) could also do things like update path costs as well.
+    # This method pushes a cell onto the priority queue Q,
+    # according to its priority, which is its cost to come.
     # This used in lines 2 and 11 of the pseudocode
     def push_cell_onto_queue(self, cell):
         cost_to_come = cell.path_cost
+        # Handles the case where the cell is the start
         if cell.parent is not None:
             cost_to_come = self._euclidean_dist(
                 cell, cell.parent) + cell.parent.path_cost
@@ -51,8 +51,8 @@ class DijkstraPlanner(PlannerBase):
         self.priority_queue.put((cost_to_come, cell))
 
     # This method returns a boolean - true if the queue is empty,
-    # false if it still has some cells on it. Its implementation
-    # depends upon the the type of search algorithm used.
+    # false if it still has some cells on it. When Empty and the goal still hasn't been visited,
+    # then the goal could not be reached.
     # This is used in line 3 of the pseudocode
     def is_queue_empty(self):
         return self.priority_queue.empty()
@@ -73,9 +73,8 @@ class DijkstraPlanner(PlannerBase):
             # need to update queue
             self._update_priority_queue(cell)
 
-    # This method finds the first cell (at the head of the queue),
-    # removes it from the queue, and returns it. Its implementation
-    # depends upon the the type of search algorithm used.
+    # This method removes an element from the queue, and returns it.
+    # In this case since it's a priority queue, it pops element with highest priority (minimum path cost)
     # This corresponds to line 4 of the pseudocode
 
     def pop_cell_from_queue(self):
