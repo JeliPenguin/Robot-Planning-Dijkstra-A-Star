@@ -31,7 +31,7 @@ if __name__ == '__main__':
     # Evaluate breadth and depth first algorithms.
     # Check the implementation of the environment
     # to see how the planner type is used.
-    airport_environment = HighLevelEnvironment(airport_map, PlannerType.BREADTH_FIRST)
+    airport_environment = HighLevelEnvironment(airport_map, PlannerType.DEPTH_FIRST)
     
     # Set to this to True to generate the search grid and
     # show graphics. If you set this to false, the
@@ -61,9 +61,15 @@ if __name__ == '__main__':
 
     bin_number = 1
     
+    total_cell_visted = []
+    total_travel_cost = []
+
     for rubbish_bin in all_rubbish_bins:
             action = (HighLevelActionType.DRIVE_ROBOT_TO_NEW_POSITION, rubbish_bin.coords())
             observation, reward, done, info = airport_environment.step(action)
+            total_cell_visted.append( info.number_of_cells_visited)
+            total_travel_cost.append( info.path_travel_cost)
+
             screen_shot_name = f'bin_{bin_number:02}.pdf'
             airport_environment.search_grid_drawer().save_screenshot(screen_shot_name)
             bin_number += 1
@@ -73,3 +79,6 @@ if __name__ == '__main__':
             except SyntaxError:
                 pass  
     
+
+    print('sum of all path costs: ', sum(total_travel_cost))
+    print('sum of all cells visited when planning the paths: ' , sum(total_cell_visted))
