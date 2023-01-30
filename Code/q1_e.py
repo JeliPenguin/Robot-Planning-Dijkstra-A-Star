@@ -35,7 +35,7 @@ if __name__ == '__main__':
     airport_environment = HighLevelEnvironment(airport_map, PlannerType.DIJKSTRA)
     
     # Set to True to get lots of (slow) graphics on the screen.
-    airport_environment.enable_verbose_graphics(False)
+    airport_environment.enable_verbose_graphics(True)
     
     # First specify the start location of the robot
     action = (HighLevelActionType.TELEPORT_ROBOT_TO_NEW_POSITION, (0, 0))
