@@ -50,13 +50,21 @@ if __name__ == '__main__':
     # Q1e:
     # Modify to collect statistics for assessing algorithms
     # Now go through them and plan a path sequentially
+
+    total_cell_visted = []
+    total_travel_cost = []
+
     for rubbish_bin in all_rubbish_bins:
             action = (HighLevelActionType.DRIVE_ROBOT_TO_NEW_POSITION, rubbish_bin.coords())
             observation, reward, done, info = airport_environment.step(action)
-    
+            total_cell_visted.append( info.number_of_cells_visited)
+            total_travel_cost.append( info.path_travel_cost)
+
             try:
                 input("Press enter in the command window to continue.....")
             except SyntaxError:
                 pass  
      
-    
+    print('sum of all path costs: ', sum(total_travel_cost))
+    print('sum of all cells visited when planning the paths: ' , sum(total_cell_visted))
+
