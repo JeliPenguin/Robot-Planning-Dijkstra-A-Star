@@ -48,8 +48,7 @@ class AStarPlanner(DijkstraPlanner):
         cost_to_come = cell.path_cost
         # Handles the case where the cell is the start
         if cell.parent is not None:
-            cost_to_come = self._euclidean_dist(
-                cell, cell.parent) + cell.parent.path_cost
+            cost_to_come = self.compute_l_stage_additive_cost(cell.parent, cell) + cell.parent.path_cost
             cell.path_cost = cost_to_come
         # Using euclidean distance between current cell and the goal as an admissable heuristic
         heuristic_cost_to_go = self._euclidean_dist(cell, self.goal)
@@ -69,8 +68,7 @@ class AStarPlanner(DijkstraPlanner):
     def resolve_duplicate(self, cell, parent_cell):
         old_path_cost = cell.path_cost
         # here euclidean works since its just one cell apart
-        current_path_cost = parent_cell.path_cost + \
-            self._euclidean_dist(cell, parent_cell)
+        current_path_cost = parent_cell.path_cost + self.compute_l_stage_additive_cost(parent_cell, cell)
 
         if current_path_cost < old_path_cost:
             cell.set_parent(parent_cell)
