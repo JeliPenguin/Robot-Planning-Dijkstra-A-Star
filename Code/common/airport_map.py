@@ -235,7 +235,15 @@ class AirportMap(CellGrid):
         # semantic label of the map cell
         
         if self._use_cell_type_traversability_costs is True:
-            raise NotImplementedError()
+            # check label of cell
+            # if secret door return path cost + 5
+            # if customs return path cost + 100
+            x, y = current_coords
+            # check this works
+            if self._map[x][y].cell_type() == MapCellType.SECRET_DOOR:
+                return 5
+            elif self._map[x][y].cell_type() == MapCellType.CUSTOMS_AREA:
+                return 100
             
         return L
         
