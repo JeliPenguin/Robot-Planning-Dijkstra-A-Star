@@ -21,7 +21,7 @@ if __name__ == '__main__':
     airport_map, drawer_height = full_scenario()
     
     # Just use Euclidean distance for traversability costs for now
-    airport_map.set_use_cell_type_traversability_costs(False)
+    airport_map.set_use_cell_type_traversability_costs(True)
     
     # Draw what the map looks like. This is optional and you
     # can comment it out
@@ -45,6 +45,7 @@ if __name__ == '__main__':
         print('Unable to teleport to (1, 1)')
         
     # Get all the rubbish bins and toilets; these are places which need cleaning
+
     all_rubbish_bins = airport_map.all_rubbish_bins()
         
     # Q1e:
