@@ -45,6 +45,7 @@ if __name__ == '__main__':
         print('Unable to teleport to (1, 1)')
         
     # Get all the rubbish bins and toilets; these are places which need cleaning
+
     all_rubbish_bins = airport_map.all_rubbish_bins()
         
     # Q1e:

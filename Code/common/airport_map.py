@@ -241,9 +241,9 @@ class AirportMap(CellGrid):
             x, y = current_coords
             # check this works
             if self._map[x][y].cell_type() == MapCellType.SECRET_DOOR:
-                return 5
+                return 5 * L
             elif self._map[x][y].cell_type() == MapCellType.CUSTOMS_AREA:
-                return 100
+                return 100 * L
             
         return L
         

@@ -18,18 +18,6 @@ class DijkstraPlanner(PlannerBase):
         PlannerBase.__init__(self, occupancy_grid)
         self.priority_queue = PriorityQueue()
 
-    def _print_prioq(self):
-        new = PriorityQueue()
-        i = 0
-        while not self.priority_queue.empty():
-            path_cost, cell = self.priority_queue.get()
-            if i < 10:
-                print(path_cost, cell.coords(), end=' ::: ')
-                i += 1
-            new.put((path_cost, cell))
-        print("\n")
-        self.priority_queue = new
-
 
     # Q1d:
     # Modify this class to finish implementing Dijkstra
