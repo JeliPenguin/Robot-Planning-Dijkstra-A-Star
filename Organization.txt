@@ -12,3 +12,12 @@ Dijkstra
 A star
 - Jeffrey
 - Youmna help when finished BFDF
+
+
+Part 2
+
+3.b,c,d - Youmna
+
+3.e,f,g - Jeffrey
+
+4 - Gui
