@@ -13,6 +13,8 @@ from p1.high_level_environment import PlannerType
 from p1.high_level_environment import HighLevelEnvironment
 from p1.high_level_actions import HighLevelActionType
 
+from joblib import dump
+
 if __name__ == '__main__':
 
     # Create the scenario
@@ -49,12 +51,25 @@ if __name__ == '__main__':
     # Q1f:
     # Modify to collect statistics for assessing algorithms
     # Now go through them and plan a path sequentially
+
+    total_cell_visted = []
+    total_travel_cost = []
+    bin_number = 1
     for rubbish_bin in all_rubbish_bins:
         action = (HighLevelActionType.DRIVE_ROBOT_TO_NEW_POSITION,
                   rubbish_bin.coords())
         observation, reward, done, info = airport_environment.step(action)
 
-        try:
-            input("Press enter in the command window to continue.....")
-        except SyntaxError:
-            pass
+        total_cell_visted.append(info.number_of_cells_visited)
+        total_travel_cost.append(info.path_travel_cost)
+        screen_shot_name = f'../save/astar/screenshots/bin_{bin_number:02}.pdf'
+        airport_environment.search_grid_drawer().save_screenshot(screen_shot_name)
+        bin_number += 1
+
+        # try:
+        #     input("Press enter in the command window to continue.....")
+        # except SyntaxError:
+        #     pass
+
+    dump(total_cell_visted, "../save/astar/total_cell_visted")
+    dump(total_travel_cost, "../save/astar/total_travel_cost")
