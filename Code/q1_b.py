@@ -19,6 +19,9 @@ if __name__ == '__main__':
     # Create the scenario
     airport_map, drawer_height = full_scenario()
 
+    enabledCost = False
+    airport_map.set_use_cell_type_traversability_costs(enabledCost)
+
     print(airport_map)
 
     # Draw what the map looks like. This is optional and you
@@ -33,8 +36,8 @@ if __name__ == '__main__':
     # Check the implementation of the environment
     # to see how the planner type is used.
 
-    plannerT = PlannerType.DEPTH_FIRST
-    #plannerT = PlannerType.BREADTH_FIRST
+    # plannerT = PlannerType.DEPTH_FIRST
+    plannerT = PlannerType.BREADTH_FIRST
     airport_environment = HighLevelEnvironment(
         airport_map, plannerT)
 
@@ -73,6 +76,8 @@ if __name__ == '__main__':
         saveType = "dfs"
     elif plannerT == PlannerType.BREADTH_FIRST:
         saveType = "bfs"
+    if enabledCost:
+        saveType += "T"
     for rubbish_bin in all_rubbish_bins:
         action = (HighLevelActionType.DRIVE_ROBOT_TO_NEW_POSITION,
                   rubbish_bin.coords())

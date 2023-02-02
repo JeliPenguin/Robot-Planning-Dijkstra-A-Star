@@ -22,7 +22,8 @@ if __name__ == '__main__':
 
     # Enable using cell type dependent traversability
     # costs.
-    airport_map.set_use_cell_type_traversability_costs(True)
+    enabledCost = True
+    airport_map.set_use_cell_type_traversability_costs(enabledCost)
 
     # Draw what the map looks like. This is optional and you
     # can comment it out
@@ -55,6 +56,9 @@ if __name__ == '__main__':
     total_cell_visted = []
     total_travel_cost = []
     bin_number = 1
+    saveName = "astar"
+    if enabledCost:
+        saveName += "T"
     for rubbish_bin in all_rubbish_bins:
         action = (HighLevelActionType.DRIVE_ROBOT_TO_NEW_POSITION,
                   rubbish_bin.coords())
@@ -62,7 +66,7 @@ if __name__ == '__main__':
 
         total_cell_visted.append(info.number_of_cells_visited)
         total_travel_cost.append(info.path_travel_cost)
-        screen_shot_name = f'../save/astar/screenshots/bin_{bin_number:02}.pdf'
+        screen_shot_name = f'../save/{saveName}/screenshots/bin_{bin_number:02}.pdf'
         airport_environment.search_grid_drawer().save_screenshot(screen_shot_name)
         bin_number += 1
 
@@ -71,5 +75,5 @@ if __name__ == '__main__':
         # except SyntaxError:
         #     pass
 
-    dump(total_cell_visted, "../save/astar/total_cell_visted")
-    dump(total_travel_cost, "../save/astar/total_travel_cost")
+    dump(total_cell_visted, f"../save/{saveName}/total_cell_visted")
+    dump(total_travel_cost, f"../save/{saveName}/total_travel_cost")
