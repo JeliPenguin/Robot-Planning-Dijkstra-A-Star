@@ -33,8 +33,8 @@ if __name__ == '__main__':
     # Check the implementation of the environment
     # to see how the planner type is used.
 
-    #plannerT = PlannerType.DEPTH_FIRST
-    plannerT = PlannerType.BREADTH_FIRST
+    plannerT = PlannerType.DEPTH_FIRST
+    #plannerT = PlannerType.BREADTH_FIRST
     airport_environment = HighLevelEnvironment(
         airport_map, plannerT)
 
