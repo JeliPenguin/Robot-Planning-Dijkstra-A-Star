@@ -28,11 +28,12 @@ from .search_grid_drawer import SearchGridDrawer
 # internally constructs a SearchGrid. This contains the nodes and
 # edges from the planner and the labels associated with them.
 
+
 class PlannerBase(object):
 
     # Construct a new planner object and set defaults.
     def __init__(self, environment_map):
-        self._environment_map = environment_map;
+        self._environment_map = environment_map
         self._search_grid = None
 
         # All these variables are used for controlling the graphics output
@@ -48,33 +49,33 @@ class PlannerBase(object):
     # This method pushes a cell onto the queue Q. Its implementation
     # depends upon the type of search algorithm used. If necessary,
     # (self) could also do things like update path costs as well.
-    # This used in lines 2 and 11 of the pseudocode    
+    # This used in lines 2 and 11 of the pseudocode
     def push_cell_onto_queue(self, cell):
         raise NotImplementedError()
 
     # This method returns a boolean - true if the queue is empty,
     # false if it still has some cells on it. Its implementation
     # depends upon the the type of search algorithm used.
-    # This is used in line 3 of the pseudocode    
+    # This is used in line 3 of the pseudocode
     def is_queue_empty(self):
         raise NotImplementedError()
 
     # Handle the case that a cell has been visited already. This is
     # used by some algorithms to rewrite paths to identify the
     # shortest path.
-    # This corresponds to line 13 of the pseudocode    
+    # This corresponds to line 13 of the pseudocode
     def resolve_duplicate(self, cell, parent_cell):
         raise NotImplementedError()
 
     # This method finds the first cell (at the head of the queue),
     # removes it from the queue, and returns it. Its implementation
     # depends upon the the type of search algorithm used.
-    # This corresponds to line 4 of the pseudocode    
+    # This corresponds to line 4 of the pseudocode
     def pop_cell_from_queue(self):
         raise NotImplementedError()
 
     # This method determines if the goal has been reached.
-    # This corresponds to line 5 of the pseudocode    
+    # This corresponds to line 5 of the pseudocode
     def has_goal_been_reached(self, cell):
         return cell == self.goal
 
@@ -86,21 +87,22 @@ class PlannerBase(object):
         # cost is 0.
         if (parent_cell is None):
             return 0
-       
-        L = self._environment_map.compute_transition_cost(parent_cell.coords(), cell.coords())
-        
+
+        L = self._environment_map.compute_transition_cost(
+            parent_cell.coords(), cell.coords())
+
         return L
-    
+
     # This method gets the list of cells which potentially could be
     # visited next. Each candidate position has to be tested
     # separately.
-    # This corresponds to line 7 of the pseudocode    
+    # This corresponds to line 7 of the pseudocode
     def next_cells_to_be_visited(self, cell):
 
         # This stores the set of valid actions / cells
         cells = list()
 
-        #Q3b
+        # Q3b
         # Modify so that the cells are visited in a different sequence.
         # Investigate the impact of changing the search order on the computed path
 
@@ -129,8 +131,8 @@ class PlannerBase(object):
         cell_coords = cell.coords()
         newX = cell_coords[0] + offsetX
         newY = cell_coords[1] + offsetY
-        if ((newX >= 0) & (newX < self._search_grid.width()) \
-            & (newY >= 0) & (newY < self._search_grid.height())):
+        if ((newX >= 0) & (newX < self._search_grid.width())
+                & (newY >= 0) & (newY < self._search_grid.height())):
             map_cell = self._search_grid.cell(newX, newY)
             if map_cell.is_obstruction() is True:
                 return
@@ -138,23 +140,23 @@ class PlannerBase(object):
             cells.append(new_search_grid_cell)
 
     # This method determines whether a cell has been visited already.
-    # This corresponds to line 9 of the pseudocode    
+    # This corresponds to line 9 of the pseudocode
     def has_cell_been_visited_already(self, cell):
         return cell.label() != SearchGridCellLabel.UNVISITED
 
     # Mark that the cell has been visited. Also note the parent, which
     # is used to extract the path later on.
-    # This corresponds to line 10 of the pseudocode    
+    # This corresponds to line 10 of the pseudocode
     def mark_cell_as_visited_and_record_parent(self, cell, parent_cell):
         cell.set_label(SearchGridCellLabel.ALIVE)
         cell.set_parent(parent_cell)
 
     # Mark that a cell is dead. A dead cell is one in which all of its
     # immediate neighbours have been visited.
-    # This corresponds to line 14 of the pseudocode    
+    # This corresponds to line 14 of the pseudocode
     def mark_cell_as_dead(self, cell):
         cell.set_label(SearchGridCellLabel.DEAD)
-        
+
     # The main search routine. Given the input startCoords (x,y) and
     # goalCoords (x,y), compute a plan. Note that the coordinates
     # index from 0 and refer to the cell number.
@@ -163,11 +165,12 @@ class PlannerBase(object):
         # Empty the queue. This is needed to make sure everything is reset
         while (self.is_queue_empty() == False):
             self.pop_cell_from_queue()
-        
+
         # Create the search grid from the occupancy grid and seed
         # unvisited and occupied cells.
         if (self._search_grid is None):
-            self._search_grid = SearchGrid.from_environment_map(self._environment_map)
+            self._search_grid = SearchGrid.from_environment_map(
+                self._environment_map)
         else:
             self._search_grid.set_from_environment_map(self._environment_map)
 
@@ -185,12 +188,12 @@ class PlannerBase(object):
         if (self._show_graphics == True):
             if (self._search_grid_drawer is None):
                 self._search_grid_drawer = \
-                    SearchGridDrawer(self._search_grid, \
+                    SearchGridDrawer(self._search_grid,
                                      self._maximum_grid_drawer_window_height_in_pixels)
             else:
                 self._search_grid_drawer.reset()
             self.draw_current_state()
-            #self._search_grid_drawer.wait_for_key_press()
+            # self._search_grid_drawer.wait_for_key_press()
 
         # Insert the start on the queue to start the process going.
         self.mark_cell_as_visited_and_record_parent(self.start, None)
@@ -201,7 +204,7 @@ class PlannerBase(object):
 
         # Indicates if we reached the goal or not
         self._goal_reached = False
-        
+
         # Iterate until we have run out of live cells to try or we reached the goal
         # This corresponds to lines 3-15 of the pseudocode
         while (self.is_queue_empty() == False):
@@ -230,12 +233,13 @@ class PlannerBase(object):
         self.draw_current_state()
 
         if (self._goal_reached == True):
-            print (f'Reached the goal after visiting {self.number_of_cells_visited} cells')
+            print(
+                f'Reached the goal after visiting {self.number_of_cells_visited} cells')
         else:
-            print (f'Could not reach the goal after visiting {self.number_of_cells_visited} cells')
-            
-        return self._goal_reached
+            print(
+                f'Could not reach the goal after visiting {self.number_of_cells_visited} cells')
 
+        return self._goal_reached
 
     # This method extracts a path from the pathEndCell to the start
     # cell. The path is a list actually sorted in the order:
@@ -244,26 +248,27 @@ class PlannerBase(object):
     # depending upon the planner used, the results might not be
     # valid. In (self) case, the path will probably not terminate at the
     # start cell.
+
     def extract_path(self, path_end_cell):
 
         # Construct the path object and mark if the goal was reached
         path = PlannedPath()
         path.goal_reached = self._goal_reached
-        
+
         # Initial condition - the goal cell
         path.waypoints.append(path_end_cell)
-               
+
         # Start at the goal and find the parent
         cell = path_end_cell.parent
 
         # Extract the cells recursively
         while (cell is not None):
-            
+
             # Add to the list
             path.waypoints.appendleft(cell)
 
             cell = cell.parent
-            
+
         # Now mark the cells as being on the path and show them. We do
         # this as a separate step to show going from the start to the goal
         for waypoint in path.waypoints:
@@ -273,28 +278,29 @@ class PlannerBase(object):
             if self._show_graphics_each_iteration is True:
                 self._search_grid_drawer.update()
                 time.sleep(self._path_pause_time_in_seconds)
-            
+
         path.number_of_cells_visited = self.number_of_cells_visited
-        
+
         if self._show_graphics is True:
             self._search_grid_drawer.update()
-                    
+
         # If we didn't reach the goal, the cost is infinite
         if self._goal_reached is False:
             path.path_travel_cost = float('inf')
             return path
-            
+
         # Now go forwards through the path and construct the cost. We could do it
         # going backwards at path assembly time, but this is easier!
         path_cost = 0
-        
+
         for cell in path.waypoints:
             if cell.parent is not None:
                 parent_coords = cell.parent.coords()
                 cell_coords = cell.coords()
                 dX = parent_coords[0] - cell_coords[0]
-                dY = parent_coords[1] - cell_coords[1]                
-                path_cost = path_cost + math.sqrt(dX * dX + dY * dY)               
+                dY = parent_coords[1] - cell_coords[1]
+                path_cost = path_cost + self._environment_map.compute_transition_cost(
+                        parent_coords, cell_coords)
 
         path.path_travel_cost = path_cost
 
@@ -305,7 +311,7 @@ class PlannerBase(object):
     def extract_path_to_goal(self):
         path = self.extract_path(self.goal)
         return path
-    
+
     # Draw the output and sleep for the pause time.
     def draw_current_state(self):
         if (self._show_graphics == True):
@@ -315,27 +321,26 @@ class PlannerBase(object):
     # Set the pause time
     def set_pause_time(self, pause_time_in_seconds):
         self._pause_time_in_seconds = pause_time_in_seconds
-        
+
     # Set the pause time for showing the path
     def set_path_pause_time(self, path_pause_time_in_seconds):
         self._path_pause_time_in_seconds = path_pause_time_in_seconds
-        
-    def show_parent_arrows(self, draw_parent_arrows):    
+
+    def show_parent_arrows(self, draw_parent_arrows):
         self._draw_parent_arrows = draw_parent_arrows
-    
+
     # Specify if we show graphics on each iteration
     def update_graphics_each_iteration(self, update_graphics_each_iteration):
         self._show_graphics_each_iteration = update_graphics_each_iteration
-        
+
     def show_graphics(self, show_graphics):
         self._show_graphics = show_graphics
-        
+
     def search_grid(self):
         return self._search_grid
-        
+
     def search_grid_drawer(self):
         return self._search_grid_drawer
-    
+
     def set_maximum_grid_drawer_window_height_in_pixels(self, max_height_in_pixels):
         self._maximum_grid_drawer_window_height_in_pixels = max_height_in_pixels
-        
