@@ -5,6 +5,7 @@ Created on 29 Jan 2022
 '''
 
 from .dynamic_programming_base import DynamicProgrammingBase
+import numpy as np
 
 # This class ipmlements the value iteration algorithm
 
