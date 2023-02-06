@@ -24,7 +24,8 @@ if __name__ == '__main__':
     airport_environment = LowLevelEnvironment(airport_map)
 
     # Configure the process model
-    airport_environment.set_nominal_direction_probability(1.0)
+    # airport_environment.set_nominal_direction_probability(1.0)
+    airport_environment.set_nominal_direction_probability(0.8)
 
     # Create the policy iterator
     policy_solver = ValueIterator(airport_environment)

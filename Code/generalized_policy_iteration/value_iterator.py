@@ -36,9 +36,6 @@ class ValueIterator(DynamicProgrammingBase):
 
         self._compute_optimal_value_function()
 
-        self._value_drawer.update()
-        input("Completed Eval")
-
         self._extract_policy()
 
         # Draw one last time to clear any transients which might
@@ -55,13 +52,13 @@ class ValueIterator(DynamicProgrammingBase):
     # Finish the implementation of the methods below.
 
     def q(self, state, action):
-        # Bellman optimality equation
+        # Q function, value for state action pair
         new_value = 0
         s_primes, rewards, probs = self._environment.next_state_and_reward_distribution(
             state, action)
         for s_prime, r, p in zip(s_primes, rewards, probs):
             if s_prime is None:
-                # current state is the goal state
+                # case where current state is the goal state
                 new_value += r
             if s_prime is not None:
                 s_prime = s_prime.coords()
@@ -86,7 +83,7 @@ class ValueIterator(DynamicProgrammingBase):
                         for action in range(self._environment.action_space.n):
                             optimalVal = max(
                                 self.q((x, y), action), optimalVal)
-                            self._v.set_value(x, y, optimalVal)
+                        self._v.set_value(x, y, optimalVal)
 
                         diff = abs(original_value-self._v.value(x, y))
                         delta = max(diff, delta)
@@ -105,7 +102,7 @@ class ValueIterator(DynamicProgrammingBase):
 
             if delta < self.theta():
                 break
-        print(steps)
+        print(f"Completed in {steps} steps")
 
     def greedy(self, state):
         best_action = -1
