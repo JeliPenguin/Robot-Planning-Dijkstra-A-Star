@@ -136,6 +136,7 @@ class PolicyIterator(DynamicProgrammingBase):
             
             # Terminate the loop if the change was very small
             if delta < self._theta:
+                print('converges')
                 break
                 
             # Terminate the loop if the maximum number of iterations is met. Generate
@@ -145,7 +146,7 @@ class PolicyIterator(DynamicProgrammingBase):
                 break
 
     def _improve_policy(self):
-       
+
         # Q3c:
         # Implement the policy improvement step.
         # This step will write the update to self._pi
@@ -154,11 +155,46 @@ class PolicyIterator(DynamicProgrammingBase):
         environment = self._environment
         map = environment.map()
 
-        raise NotImplementedError()
-        
         policy_stable = True
 
-        # Return true if the policy is stable (=isn't changing)     
+        val_fun = self._environment.initial_value_function()
+
+        for x in range(map.width()):
+            for y in range(map.height()):
+                if map.cell(x, y).is_obstruction() or map.cell(x, y).is_terminal():
+                    continue
+
+                old_action = self._pi.action(x, y)
+
+                argmax_a = -1
+                old_v = None
+
+                for a in range(10):  # LowLevelActionType.NUMBER_OF_ACTIONS
+                    # p(s',r|s,a))
+                    s_prime, r, p = environment.next_state_and_reward_distribution(
+                        (x, y), a)
+
+                    new_v = 0
+                    for prob in range(len(p)):
+                        sc = s_prime[prob].coords()
+                        new_v += p[prob] * (r[prob] + self._gamma *
+                                            self._v.value(sc[0], sc[1]))
+
+                    if not old_v:
+                        argmax_a = a
+                        old_v = new_v
+                    elif new_v > old_v:
+                        argmax_a = a
+                        old_v = new_v
+
+                val_fun.set_value(x, y, old_v)
+
+                self._pi.set_action(x, y, argmax_a)
+
+                if old_action != self._pi.action(x, y):
+                    policy_stable = False
+
+        # Return true if the policy is stable (=isn't changing)
         return policy_stable
                 
     def set_max_policy_evaluation_steps_per_iteration(self, \

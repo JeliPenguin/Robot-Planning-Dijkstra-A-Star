@@ -25,6 +25,9 @@ if __name__ == '__main__':
     # Q3d:
     # Configure the process model using different probabilities
     airport_environment.set_nominal_direction_probability(1)
+    # airport_environment.set_nominal_direction_probability(0.9)
+    # airport_environment.set_nominal_direction_probability(0.6)
+    # airport_environment.set_nominal_direction_probability(0.3)
 
     # Note that you can create multiple instances of the same object, with different
     # settings, and run them in the same programme. Therefore, you do not need to
@@ -35,6 +38,8 @@ if __name__ == '__main__':
 
     # Set up initial state
     policy_solver.initialize()
+
+    policy_solver.set_gamma(0.7)
         
     # Bind the drawer with the solver
     policy_drawer = LowLevelPolicyDrawer(policy_solver.policy(), drawer_height)
@@ -47,7 +52,9 @@ if __name__ == '__main__':
     v, pi = policy_solver.solve_policy()
     
     # Save screen shot; this is in the current directory
-    policy_drawer.save_screenshot("policy_iteration_results.jpg")
     
+    # screen_shot_name = '/save/policy_iteration/screenshots/prob_1.jpeg'
+    policy_drawer.save_screenshot('prob_1.jpeg')
+
     # Wait for a key press
     value_function_drawer.wait_for_key_press()
