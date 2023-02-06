@@ -5,6 +5,8 @@ Created on 29 Jan 2022
 '''
 
 from .dynamic_programming_base import DynamicProgrammingBase
+import numpy as np
+from time import sleep
 
 # This class ipmlements the value iteration algorithm
 
@@ -48,52 +50,78 @@ class ValueIterator(DynamicProgrammingBase):
 
     # Q3f:
     # Finish the implementation of the methods below.
+
+    def q(self, state, action):
+        # Q function, value for state action pair
+        new_value = 0
+        s_primes, rewards, probs = self._environment.next_state_and_reward_distribution(
+            state, action)
+        for s_prime, r, p in zip(s_primes, rewards, probs):
+            if s_prime is None:
+                # case where current state is the goal state
+                new_value += r
+            if s_prime is not None:
+                s_prime = s_prime.coords()
+                new_value += p * (r + self.gamma() *
+                                  self._v.value(s_prime[0], s_prime[1]))
+        return new_value
+
     def _compute_optimal_value_function(self):
 
         # This method returns no value.
         # The method updates self._pi
+        steps = 0
+        while True:
+            delta = 0
+            # a = set()
+            for x in range(self._environment.map().width()):
+                for y in range(self._environment.map().height()):
+                    original_value = self._v.value(x, y)
+                    # Make sure current cell has a state value (Not a wall, baggage claim, chair or toilet)
+                    if not np.isnan(original_value):
+                        optimalVal = -np.inf
+                        for action in range(self._environment.action_space.n):
+                            optimalVal = max(
+                                self.q((x, y), action), optimalVal)
+                        self._v.set_value(x, y, optimalVal)
 
-        # while True:
-        #     delta = 0
-        #     for state in range(self.state_space): #Need mod
-        #         original_value = self._v.value() # Need mod
-        #         # Asynchronously update the value function
-        #         for action in range(self._environment.action_space): # Need mod
-        #             self.value[state] = max(self.bellman(
-        #                 state, action), self.value[state])
-        #         delta = max(abs(original_value-self.value[state]), delta)
-        #     if delta < self._theta:
-        #         # Reached desired accuracy
-        #         break
+                        diff = abs(original_value-self._v.value(x, y))
+                        delta = max(diff, delta)
+                    # else:
+                    #     a.add(self._environment.map().cell(x,y).cell_type())
+            # print(a)
 
-        raise NotImplementedError()
+            steps += 1
+            # difference = abs(original - self._v._values)
+            # difference = difference[~np.isnan(difference)]
+            # print(np.max(difference))
+            # print(delta)
+            # print("--------")
+            # self._value_drawer.update()
+            # sleep(0.2)
+
+            if delta < self.theta():
+                break
+        print(f"Completed in {steps} steps")
+
+    def greedy(self, state):
+        best_action = -1
+        best_action_val = -np.inf
+        for action in range(self._environment.action_space.n):
+            action_val = self.q(state, action)
+            if action_val > best_action_val:
+                best_action = action
+                best_action_val = action_val
+        return best_action
 
     def _extract_policy(self):
 
         # This method returns no value.
         # The policy is in self._pi
 
-        # for state in range(self.state_space): # Need mod
-        #     # Take greedy action according to the evaluated value function
-        #     self.policy.set_action(x, y, self.greedy(state))
-        raise NotImplementedError()
-
-    def q(self, state, action):
-        # Bellman optimality equation
-        dynamics = self.env.P[state][action]
-        new_value = 0
-        for next_step in dynamics:
-            probability, nextstate, reward, done = next_step
-            new_value += probability * \
-                (reward + self.discount * self.value[nextstate])
-        return new_value
-
-    def greedy(self, state):
-        best_action = -1
-        best_action_val = -np.inf
-        for action in range(self._environment.action_space):
-            action_val = self.q(state, action)
-            if action_val > best_action_val:
-                best_action = action
-                best_action_val = action_val
-        return best_action
+        for x in range(self._environment.map().width()):
+            for y in range(self._environment.map().height()):
+                # Take greedy action according to the evaluated value function
+                if not np.isnan(self._v.value(x, y)):
+                    # Again making sure current cell has a state value (Not a wall, baggage claim, chair or toilet)
+                    self._pi.set_action(x, y, self.greedy((x, y)))
