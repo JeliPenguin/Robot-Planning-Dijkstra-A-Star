@@ -13,16 +13,18 @@ from .dynamic_programming_base import DynamicProgrammingBase
 
 class PolicyIterator(DynamicProgrammingBase):
 
-    def __init__(self, environment):
+    def __init__(self, environment, interRender=True):
         DynamicProgrammingBase.__init__(self, environment)
 
         # The maximum number of times the policy evaluation algorithm
         # will be run before the for loop is exited.
-        self._max_policy_evaluation_steps_per_iteration = 10
+        self._max_policy_evaluation_steps_per_iteration = 100
 
         # The maximum number of times the policy evaluation iteration
         # is carried out.
         self._max_policy_iteration_steps = 1000
+
+        self.interRender = interRender
 
     # Perform policy evaluation for the current policy, and return
     # a copy of the state value function. Since this is a deep copy, you can modify it
@@ -36,12 +38,13 @@ class PolicyIterator(DynamicProgrammingBase):
         return self._v
 
     def solve_policy(self):
+        self._evaluatorRunCount = 0
 
         # Initialize the drawers if defined
-        if self._policy_drawer is not None:
+        if self._policy_drawer is not None and self.interRender:
             self._policy_drawer.update()
 
-        if self._value_drawer is not None:
+        if self._value_drawer is not None and self.interRender:
             self._value_drawer.update()
 
         # Reset termination indicators
@@ -54,15 +57,16 @@ class PolicyIterator(DynamicProgrammingBase):
 
             # Evaluate the policy
             self._evaluate_policy()
+            self._evaluatorRunCount += 1
 
             # Improve the policy
             policy_stable = self._improve_policy()
 
             # Update the drawers if needed
-            if self._policy_drawer is not None:
+            if self._policy_drawer is not None and self.interRender:
                 self._policy_drawer.update()
 
-            if self._value_drawer is not None:
+            if self._value_drawer is not None and self.interRender:
                 self._value_drawer.update()
 
             policy_iteration_step += 1
@@ -74,6 +78,8 @@ class PolicyIterator(DynamicProgrammingBase):
 
         if self._value_drawer is not None:
             self._value_drawer.update()
+
+        print(self._evaluatorRunCount)
 
         # Return the value function and policy of the solution
         return self._v, self._pi
@@ -227,3 +233,6 @@ class PolicyIterator(DynamicProgrammingBase):
     def set_max_policy_evaluation_steps_per_iteration(self,
                                                       max_policy_evaluation_steps_per_iteration):
         self._max_policy_evaluation_steps_per_iteration = max_policy_evaluation_steps_per_iteration
+
+    def get_evaluatorRunCount(self):
+        return self._evaluatorRunCount

@@ -15,13 +15,13 @@ from p2.low_level_environment import LowLevelEnvironment
 from p2.low_level_policy_drawer import LowLevelPolicyDrawer
 
 if __name__ == '__main__':
-    
+
     # Get the map for the scenario
     airport_map, drawer_height = full_scenario()
-    
+
     # Set up the environment for the robot driving around
     airport_environment = LowLevelEnvironment(airport_map)
-    
+
     # Q3d:
     # Configure the process model using different probabilities
     airport_environment.set_nominal_direction_probability(1)
@@ -39,20 +39,22 @@ if __name__ == '__main__':
     # Set up initial state
     policy_solver.initialize()
 
-    policy_solver.set_gamma(0.7)
-        
+    # policy_solver.set_gamma(0.7)
+    policy_solver.set_max_policy_evaluation_steps_per_iteration(10)
+
     # Bind the drawer with the solver
     policy_drawer = LowLevelPolicyDrawer(policy_solver.policy(), drawer_height)
     policy_solver.set_policy_drawer(policy_drawer)
-    
-    value_function_drawer = ValueFunctionDrawer(policy_solver.value_function(), drawer_height)
+
+    value_function_drawer = ValueFunctionDrawer(
+        policy_solver.value_function(), drawer_height)
     policy_solver.set_value_function_drawer(value_function_drawer)
-        
+
     # Compute the solution
     v, pi = policy_solver.solve_policy()
-    
+
     # Save screen shot; this is in the current directory
-    
+
     # Save screen shot; this is in the current directory
     policy_drawer.save_screenshot("policy_iteration_results_prob_1.pdf")
     value_function_drawer.save_screenshot("value_function_results_prob_1.pdf")
