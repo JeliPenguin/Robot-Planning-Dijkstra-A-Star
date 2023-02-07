@@ -30,6 +30,8 @@ if __name__ == '__main__':
 
     # Set up initial state
     policy_solver.initialize()
+
+    policy_solver.set_gamma(0.7)
     
     # We only do 10 policy evaluation steps per iteration
     policy_solver.set_max_policy_evaluation_steps_per_iteration(10)
