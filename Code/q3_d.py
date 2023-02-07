@@ -53,8 +53,9 @@ if __name__ == '__main__':
     
     # Save screen shot; this is in the current directory
     
-    # screen_shot_name = '/save/policy_iteration/screenshots/prob_1.jpeg'
-    policy_drawer.save_screenshot('prob_1.jpeg')
+    # Save screen shot; this is in the current directory
+    policy_drawer.save_screenshot("policy_iteration_results_prob_1.pdf")
+    value_function_drawer.save_screenshot("value_function_results_prob_1.pdf")
 
     # Wait for a key press
     value_function_drawer.wait_for_key_press()
