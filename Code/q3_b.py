@@ -14,14 +14,14 @@ from generalized_policy_iteration.value_function_drawer import ValueFunctionDraw
 from p2.low_level_environment import LowLevelEnvironment
 
 if __name__ == '__main__':
-    
+
     # Get the map for the scenario
     #airport_map, drawer_height = three_row_scenario()
     airport_map, drawer_height = full_scenario()
-    
+
     # Set up the environment for the robot driving around
     airport_environment = LowLevelEnvironment(airport_map)
-    
+
     # Configure the process model
     airport_environment.set_nominal_direction_probability(1)
 
@@ -32,20 +32,20 @@ if __name__ == '__main__':
     policy_solver.initialize()
 
     policy_solver.set_gamma(0.7)
-    
+
     # We only do 10 policy evaluation steps per iteration
     policy_solver.set_max_policy_evaluation_steps_per_iteration(10)
-            
+
     # Evaluate the policy. In this part of the question, only this is supported.
     V = policy_solver.evaluate_policy()
-    
+
     value_function_drawer = ValueFunctionDrawer(V, drawer_height)
 
     # Run the evaluator repeatedly. This lets you see how the value changes
-    # over time.    
+    # over time.
     for steps in range(1000):
         policy_solver.evaluate_policy()
         value_function_drawer.update()
-     
+
     # Wait for a final key press
     value_function_drawer.wait_for_key_press()

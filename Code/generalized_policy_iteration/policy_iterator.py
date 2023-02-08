@@ -18,7 +18,7 @@ class PolicyIterator(DynamicProgrammingBase):
 
         # The maximum number of times the policy evaluation algorithm
         # will be run before the for loop is exited.
-        self._max_policy_evaluation_steps_per_iteration = 100
+        self._max_policy_evaluation_steps_per_iteration = 10
 
         # The maximum number of times the policy evaluation iteration
         # is carried out.
