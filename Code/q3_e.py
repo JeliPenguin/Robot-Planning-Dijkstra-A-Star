@@ -13,14 +13,16 @@ from generalized_policy_iteration.value_function_drawer import ValueFunctionDraw
 
 from p2.low_level_environment import LowLevelEnvironment
 from p2.low_level_policy_drawer import LowLevelPolicyDrawer
-from joblib import dump
+from joblib import dump, load
 
 
 def setParameters(policy_solver, paramVal):
     # print("max_policy_evaluation_steps_per_iteration: ", paramVal)
     print("theta: ", paramVal)
+    # print("gamma: ", paramVal)
     # policy_solver.set_max_policy_evaluation_steps_per_iteration(paramVal)
     policy_solver.set_theta(paramVal)
+    # policy_solver.set_gamma(paramVal)
 
 
 if __name__ == '__main__':
@@ -28,11 +30,14 @@ if __name__ == '__main__':
     # Q3e:
     # Investigate different parameters
 
-    parameters = [1] + [i * 5 for i in range(1, 21)]
+    # parameters = [1] + [i * 5 for i in range(1, 21)]
     # parameterName = "mpespiSave"
 
     parameters = [10e-1, 10e-2, 10e-3, 10e-4, 10e-5]
     parameterName = "thetasSave"
+
+    # parameters = [0.9999]
+    # parameterName = "gammaSave"
 
     results = {}
 
@@ -50,29 +55,33 @@ if __name__ == '__main__':
 
         # Create the policy iterator
         policy_solver = PolicyIterator(
-            airport_environment)
+            airport_environment, interRender=True)
         setParameters(policy_solver, paramVal)
 
         # Set up initial state
         policy_solver.initialize()
 
         # Bind the drawer with the solver
-        # policy_drawer = LowLevelPolicyDrawer(
-        #     policy_solver.policy(), drawer_height)
-        # policy_solver.set_policy_drawer(policy_drawer)
+        policy_drawer = LowLevelPolicyDrawer(
+            policy_solver.policy(), drawer_height)
+        policy_solver.set_policy_drawer(policy_drawer)
 
-        # value_function_drawer = ValueFunctionDrawer(
-        #     policy_solver.value_function(), drawer_height)
-        # policy_solver.set_value_function_drawer(value_function_drawer)
+        value_function_drawer = ValueFunctionDrawer(
+            policy_solver.value_function(), drawer_height)
+        policy_solver.set_value_function_drawer(value_function_drawer)
 
         # Compute the solution
         v, pi = policy_solver.solve_policy()
+        # p = load("policy")
+        # print(p == pi._policy)
+
         results[paramVal] = policy_solver.get_evaluatorRunCount()
 
-        # # Save screen shot; this is in the current directory
-        # policy_drawer.save_screenshot("policy_iteration_results.jpg")
+        # Save screen shot; this is in the current directory
+        policy_drawer.save_screenshot("policy_iteration_results.pdf")
 
         # # Wait for a key press
         # value_function_drawer.wait_for_key_press()
         print("-------------------------------------------------")
     dump(results, f"../save/Q3/{parameterName}")
+    input()

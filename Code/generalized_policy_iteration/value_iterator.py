@@ -7,6 +7,7 @@ Created on 29 Jan 2022
 from .dynamic_programming_base import DynamicProgrammingBase
 import numpy as np
 from time import sleep
+from joblib import load
 
 # This class ipmlements the value iteration algorithm
 
@@ -20,11 +21,20 @@ class ValueIterator(DynamicProgrammingBase):
         # algorithm is carried out is carried out.
         self._max_optimal_value_function_iterations = 2000
 
+        self.validActions = self._environment.action_space.n
+
     # Method to change the maximum number of iterations
     def set_max_optimal_value_function_iterations(self, max_optimal_value_function_iterations):
         self._max_optimal_value_function_iterations = max_optimal_value_function_iterations
 
     #
+
+    def loadValue(self):
+        v = load("../save/Q3/VALUEITER-values0_8")
+        for x in range(self._environment.map().width()):
+            for y in range(self._environment.map().height()):
+                self._v.set_value(x, y, v.value(x, y))
+
     def solve_policy(self):
 
         # Initialize the drawers
@@ -35,6 +45,8 @@ class ValueIterator(DynamicProgrammingBase):
             self._value_drawer.update()
 
         self._compute_optimal_value_function()
+
+        # self.loadValue()
 
         self._extract_policy()
 
@@ -56,6 +68,17 @@ class ValueIterator(DynamicProgrammingBase):
         new_value = 0
         s_primes, rewards, probs = self._environment.next_state_and_reward_distribution(
             state, action)
+        # if state == (59, 30):
+        #     actions = ["RIGHT","UP_RIGHT","UP","UP_LEFT","LEFT","DOWN_LEFT","DOWN","DOWN_RIGHT","TERMINATE","NONE"]
+        #     print("Action: ", actions[action])
+        #     # print("Action val: ", action_val)
+        #     # print("Best: ", best_action)
+        #     # print("Best action val: ", best_action_val)
+        #     print("Sprimes: ",[s.coords() for s in s_primes])
+        #     print("Sprime values: ",[self._v.value(s_prime.coords()[0], s_prime.coords()[1]) for s_prime in s_primes])
+        #     print("rewards: ",rewards)
+        #     print("probs: ",probs)
+
         for s_prime, r, p in zip(s_primes, rewards, probs):
             if s_prime is None:
                 # case where current state is the goal state
@@ -64,6 +87,9 @@ class ValueIterator(DynamicProgrammingBase):
                 s_prime = s_prime.coords()
                 new_value += p * (r + self.gamma() *
                                   self._v.value(s_prime[0], s_prime[1]))
+        # if state == (59,30):
+        #     print("Action value: ",new_value)
+        #     print("--------------------------")
         return new_value
 
     def _compute_optimal_value_function(self):
@@ -80,7 +106,7 @@ class ValueIterator(DynamicProgrammingBase):
                     # Make sure current cell has a state value (Not a wall, baggage claim, chair or toilet)
                     if not np.isnan(original_value):
                         optimalVal = -np.inf
-                        for action in range(self._environment.action_space.n):
+                        for action in range(self.validActions):
                             optimalVal = max(
                                 self.q((x, y), action), optimalVal)
                         self._v.set_value(x, y, optimalVal)
@@ -107,7 +133,7 @@ class ValueIterator(DynamicProgrammingBase):
     def greedy(self, state):
         best_action = -1
         best_action_val = -np.inf
-        for action in range(self._environment.action_space.n):
+        for action in range(self.validActions):
             action_val = self.q(state, action)
             if action_val > best_action_val:
                 best_action = action

@@ -13,6 +13,7 @@ from generalized_policy_iteration.value_function_drawer import ValueFunctionDraw
 
 from p2.low_level_environment import LowLevelEnvironment
 from p2.low_level_policy_drawer import LowLevelPolicyDrawer
+from joblib import dump
 
 if __name__ == '__main__':
 
@@ -43,6 +44,8 @@ if __name__ == '__main__':
 
     # Compute the solution
     v, pi = policy_solver.solve_policy()
+
+    # dump(v, "../save/Q3/VALUEITER-values0_8")
 
     # Save screen shot; this is in the current directory
     policy_drawer.save_screenshot("value_iterator_results.pdf")
