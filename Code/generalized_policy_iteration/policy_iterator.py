@@ -79,7 +79,7 @@ class PolicyIterator(DynamicProgrammingBase):
         if self._value_drawer is not None:
             self._value_drawer.update()
 
-        print(self._evaluatorRunCount)
+        print("Number of evaluation runs: ",self._evaluatorRunCount)
 
         # Return the value function and policy of the solution
         return self._v, self._pi
