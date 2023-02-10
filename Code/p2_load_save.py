@@ -5,8 +5,8 @@ import math
 
 def showStat():
     # parameters = "thetasSave"
-    # parameters = "gammaSave"
-    parameters = "mpespiSave"
+    parameters = "gammaSave"
+    # parameters = "mpespiSave"
     res = load(f"../save/Q3/{parameters}")
     print(res)
     y = []
@@ -17,7 +17,7 @@ def showStat():
         x.append(b)
 
     plt.plot(y, x)
-    plt.xlabel("Thetas")
+    plt.xlabel("Gamma")
     # plt.xscale("log")
     plt.ylabel("Number of times Policy Evaluator is ran")
     plt.show()

@@ -17,12 +17,10 @@ from joblib import dump, load
 
 
 def setParameters(policy_solver, paramVal):
-    print("max_policy_evaluation_steps_per_iteration: ", paramVal)
-    # print("theta: ", paramVal)
-    # print("gamma: ", paramVal)
-    policy_solver.set_max_policy_evaluation_steps_per_iteration(paramVal)
+    print("Parameter value: ", paramVal)
+    # policy_solver.set_max_policy_evaluation_steps_per_iteration(paramVal)
     # policy_solver.set_theta(paramVal)
-    # policy_solver.set_gamma(paramVal)
+    policy_solver.set_gamma(paramVal)
 
 
 if __name__ == '__main__':
@@ -30,17 +28,17 @@ if __name__ == '__main__':
     # Q3e:
     # Investigate different parameters
 
-    parameters = [1] + [i * 5 for i in range(1, 21)]
-    parameterName = "mpespiSave"
+    # parameters = [1] + [i * 5 for i in range(1, 21)]
+    # parameterName = "mpespiSave"
 
     # parameters = [10e-1, 10e-2, 10e-3, 10e-4, 10e-5]
     # parameters = [10e-5, 10e-4, 10e-3, 10e-2, 1, 5, 10, 15, 20, 25, 30, 35, 40]
     # parameterName = "thetasSave"
 
     # parameters = [0.01 * i for i in range(70,83)]
-    # parameters = [0.01 * i for i in range(80, 101)]
-    # parameters = [1]
-    # parameterName = "gammaSave"
+    parameters = [0.01 * i for i in range(80, 101)]
+    # parameters = [0.7]
+    parameterName = "gammaSave"
 
     results = {}
 
@@ -58,13 +56,13 @@ if __name__ == '__main__':
 
         # Create the policy iterator
         policy_solver = PolicyIterator(
-            airport_environment, interRender=False)
+            airport_environment, interRender=True)
         setParameters(policy_solver, paramVal)
 
         # Set up initial state
         policy_solver.initialize()
 
-        # Bind the drawer with the solver
+        # # Bind the drawer with the solver
         # policy_drawer = LowLevelPolicyDrawer(
         #     policy_solver.policy(), drawer_height)
         # policy_solver.set_policy_drawer(policy_drawer)

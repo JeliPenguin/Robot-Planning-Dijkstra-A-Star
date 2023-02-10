@@ -69,10 +69,10 @@ if __name__ == '__main__':
         airport_environment.search_grid_drawer().save_screenshot(screen_shot_name)
         bin_number += 1
 
-        # try:
-        #     input("Press enter in the command window to continue.....")
-        # except SyntaxError:
-        #     pass
+        try:
+            input("Press enter in the command window to continue.....")
+        except SyntaxError:
+            pass
 
     dump(total_cell_visted, "../save/dijk/total_cell_visted")
     dump(total_travel_cost, "../save/dijk/total_travel_cost")
