@@ -27,6 +27,8 @@ class PolicyIterator(DynamicProgrammingBase):
 
         self.interRender = interRender
 
+        self.iterations = 0
+
     # Perform policy evaluation for the current policy, and return
     # a copy of the state value function. Since this is a deep copy, you can modify it
     # however you like.
@@ -72,7 +74,6 @@ class PolicyIterator(DynamicProgrammingBase):
 
             # Evaluate the policy
             self._evaluate_policy()
-            self._evaluatorRunCount += 1
 
             # Improve the policy
             policy_stable = self._improve_policy()
@@ -114,7 +115,7 @@ class PolicyIterator(DynamicProgrammingBase):
         iteration = 0
 
         while True:
-
+            self.iterations += 1
             delta = 0
 
             # Sweep systematically over all the states
@@ -188,6 +189,7 @@ class PolicyIterator(DynamicProgrammingBase):
         map = self._environment.map()
 
         policy_stable = True
+        self._evaluatorRunCount += 1
 
         for x in range(map.width()):
             for y in range(map.height()):

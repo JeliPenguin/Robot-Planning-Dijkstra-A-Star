@@ -14,6 +14,7 @@ from generalized_policy_iteration.value_function_drawer import ValueFunctionDraw
 
 from p2.low_level_environment import LowLevelEnvironment
 from p2.low_level_policy_drawer import LowLevelPolicyDrawer
+from joblib import dump
 
 if __name__ == '__main__':
 

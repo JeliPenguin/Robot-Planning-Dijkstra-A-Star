@@ -109,6 +109,7 @@ class ValueIterator(DynamicProgrammingBase):
         steps = 0
         while True:
             delta = 0
+            self.iterations += 1
             # a = set()
             for x in range(self._environment.map().width()):
                 for y in range(self._environment.map().height()):
