@@ -9,6 +9,7 @@ Created on 29 Jan 2022
 import copy
 import numpy as np
 from .dynamic_programming_base import DynamicProgrammingBase
+from joblib import load, dump
 
 
 class PolicyIterator(DynamicProgrammingBase):
@@ -26,6 +27,8 @@ class PolicyIterator(DynamicProgrammingBase):
 
         self.interRender = interRender
 
+        self.iterations = 0
+
     # Perform policy evaluation for the current policy, and return
     # a copy of the state value function. Since this is a deep copy, you can modify it
     # however you like.
@@ -36,6 +39,19 @@ class PolicyIterator(DynamicProgrammingBase):
         #v = copy.deepcopy(self._v)
 
         return self._v
+
+    def validActionSpace(self, x, y):
+        if not self._environment.map().cell(x, y).is_terminal():
+            return self._environment.action_space.n - 2
+        return self._environment.action_space.n
+
+    def loadComputed(self):
+        self._pi = load("../save/Q3/POLYITER-policy0_8")
+        self._v = load("../save/Q3/POLYITER-values0_8")
+
+    def saveComputed(self):
+        dump(self._v, "../save/Q3/POLYITER-values0_8")
+        dump(self._pi, "../save/Q3/POLYITER-policy0_8")
 
     def solve_policy(self):
         self._evaluatorRunCount = 0
@@ -52,12 +68,12 @@ class PolicyIterator(DynamicProgrammingBase):
         policy_stable = False
 
         # Loop until either the policy converges or we ran out of steps
+
         while (policy_stable is False) and \
                 (policy_iteration_step < self._max_policy_iteration_steps):
 
             # Evaluate the policy
             self._evaluate_policy()
-            self._evaluatorRunCount += 1
 
             # Improve the policy
             policy_stable = self._improve_policy()
@@ -71,6 +87,10 @@ class PolicyIterator(DynamicProgrammingBase):
 
             policy_iteration_step += 1
 
+        # self.loadComputed()
+
+        # self.saveComputed()
+
         # Draw one last time to clear any transients which might
         # draw changes
         if self._policy_drawer is not None:
@@ -79,7 +99,7 @@ class PolicyIterator(DynamicProgrammingBase):
         if self._value_drawer is not None:
             self._value_drawer.update()
 
-        print(self._evaluatorRunCount)
+        print("Number of evaluation runs: ", self._evaluatorRunCount)
 
         # Return the value function and policy of the solution
         return self._v, self._pi
@@ -95,7 +115,7 @@ class PolicyIterator(DynamicProgrammingBase):
         iteration = 0
 
         while True:
-
+            self.iterations += 1
             delta = 0
 
             # Sweep systematically over all the states
@@ -169,6 +189,7 @@ class PolicyIterator(DynamicProgrammingBase):
         map = self._environment.map()
 
         policy_stable = True
+        self._evaluatorRunCount += 1
 
         for x in range(map.width()):
             for y in range(map.height()):
@@ -181,7 +202,7 @@ class PolicyIterator(DynamicProgrammingBase):
                 old_v = -np.inf
 
                 # LowLevelActionType.NUMBER_OF_ACTIONS
-                for a in range(self._environment.action_space.n):
+                for a in range(self.validActionSpace(x, y)):
                     # p(s',r|s,a))
                     s_prime, r, p = self._environment.next_state_and_reward_distribution(
                         (x, y), a)

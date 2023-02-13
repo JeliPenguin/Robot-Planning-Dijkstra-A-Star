@@ -45,10 +45,23 @@ if __name__ == '__main__':
     # Compute the solution
     v, pi = policy_solver.solve_policy()
 
-    # dump(v, "../save/Q3/VALUEITER-values0_8")
+    # checkState = (9, 32)
+    # print(pi._policy[checkState[0]][checkState[1]])
+    # s, r, p = airport_environment.next_state_and_reward_distribution(
+    #     (checkState[0], checkState[1]), 0)
+    # print([scoord.coords() for scoord in s])
+    # print(r)
+    # print(p)
+
+    # print("DOWN")
+    # s, r, p = airport_environment.next_state_and_reward_distribution(
+    #     (checkState[0], checkState[1]), 6)
+    # print([scoord.coords() for scoord in s])
+    # print(r)
+    # print(p)
 
     # Save screen shot; this is in the current directory
-    policy_drawer.save_screenshot("value_iterator_results.pdf")
+    # policy_drawer.save_screenshot("value_iterator_results.pdf")
 
     # Wait for a key press
     value_function_drawer.wait_for_key_press()

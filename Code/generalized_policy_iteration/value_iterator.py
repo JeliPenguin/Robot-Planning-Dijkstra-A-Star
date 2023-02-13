@@ -7,7 +7,7 @@ Created on 29 Jan 2022
 from .dynamic_programming_base import DynamicProgrammingBase
 import numpy as np
 from time import sleep
-from joblib import load
+from joblib import load, dump
 
 # This class ipmlements the value iteration algorithm
 
@@ -20,10 +20,10 @@ class ValueIterator(DynamicProgrammingBase):
         # The maximum number of times the value iteration
         # algorithm is carried out is carried out.
         self._max_optimal_value_function_iterations = 2000
-
-        self.validActions = self._environment.action_space.n
+        self.iterations = 0
 
     # Method to change the maximum number of iterations
+
     def set_max_optimal_value_function_iterations(self, max_optimal_value_function_iterations):
         self._max_optimal_value_function_iterations = max_optimal_value_function_iterations
 
@@ -34,6 +34,9 @@ class ValueIterator(DynamicProgrammingBase):
         for x in range(self._environment.map().width()):
             for y in range(self._environment.map().height()):
                 self._v.set_value(x, y, v.value(x, y))
+
+    def saveComputed(self):
+        dump(self._v, "../save/Q3/VALUEITER-values0_8")
 
     def solve_policy(self):
 
@@ -57,6 +60,8 @@ class ValueIterator(DynamicProgrammingBase):
 
         if self._value_drawer is not None:
             self._value_drawer.update()
+
+        self.saveComputed()
 
         return self._v, self._pi
 
@@ -92,6 +97,11 @@ class ValueIterator(DynamicProgrammingBase):
         #     print("--------------------------")
         return new_value
 
+    def validActionSpace(self, x, y):
+        if not self._environment.map().cell(x, y).is_terminal():
+            return self._environment.action_space.n - 2
+        return self._environment.action_space.n
+
     def _compute_optimal_value_function(self):
 
         # This method returns no value.
@@ -99,6 +109,7 @@ class ValueIterator(DynamicProgrammingBase):
         steps = 0
         while True:
             delta = 0
+            self.iterations += 1
             # a = set()
             for x in range(self._environment.map().width()):
                 for y in range(self._environment.map().height()):
@@ -106,7 +117,7 @@ class ValueIterator(DynamicProgrammingBase):
                     # Make sure current cell has a state value (Not a wall, baggage claim, chair or toilet)
                     if not np.isnan(original_value):
                         optimalVal = -np.inf
-                        for action in range(self.validActions):
+                        for action in range(self.validActionSpace(x, y)):
                             optimalVal = max(
                                 self.q((x, y), action), optimalVal)
                         self._v.set_value(x, y, optimalVal)
@@ -128,12 +139,12 @@ class ValueIterator(DynamicProgrammingBase):
 
             if delta < self.theta():
                 break
-        print(f"Completed in {steps} steps")
+        print(f"Computed optimal value function in {steps} steps")
 
     def greedy(self, state):
         best_action = -1
         best_action_val = -np.inf
-        for action in range(self.validActions):
+        for action in range(self.validActionSpace(state[0], state[1])):
             action_val = self.q(state, action)
             if action_val > best_action_val:
                 best_action = action

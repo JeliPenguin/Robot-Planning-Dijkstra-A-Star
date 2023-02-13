@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     # Enable using cell type dependent traversability
     # costs.
-    enabledCost = True
+    enabledCost = False
     airport_map.set_use_cell_type_traversability_costs(enabledCost)
 
     # Draw what the map looks like. This is optional and you
