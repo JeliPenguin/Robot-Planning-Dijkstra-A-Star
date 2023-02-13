@@ -217,32 +217,6 @@ class PolicyIterator(DynamicProgrammingBase):
                         argmax_a = a
                         old_v = new_v
 
-                # if x == 51 and y == 21 and argmax_a == 5:
-                #     for a in range(self._environment.action_space.n):
-                #         # p(s',r|s,a))
-                #         s_prime, r, p = self._environment.next_state_and_reward_distribution(
-                #             (x, y), a)
-
-                #         print("Action: ", a)
-                #         print("sPrimes: ", [s.coords() for s in s_prime])
-                #         print("rewards: ", r)
-                #         print("probabilities: ", p)
-
-                #         new_v = 0
-                #         for i in range(len(p)):
-                #             sc = s_prime[i].coords()
-                #             new_v += p[i] * (r[i] + self._gamma *
-                #                              self._v.value(sc[0], sc[1]))
-
-                #         print("Action value: ", new_v)
-                #         if not old_v:
-                #             argmax_a = a
-                #             old_v = new_v
-                #         elif new_v > old_v:
-                #             argmax_a = a
-                #             old_v = new_v
-                # exit()
-
                 self._pi.set_action(x, y, argmax_a)
 
                 if old_action != self._pi.action(x, y):
