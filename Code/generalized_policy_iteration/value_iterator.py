@@ -73,18 +73,9 @@ class ValueIterator(DynamicProgrammingBase):
         new_value = 0
         s_primes, rewards, probs = self._environment.next_state_and_reward_distribution(
             state, action)
-        # if state == (59, 30):
-        #     actions = ["RIGHT","UP_RIGHT","UP","UP_LEFT","LEFT","DOWN_LEFT","DOWN","DOWN_RIGHT","TERMINATE","NONE"]
-        #     print("Action: ", actions[action])
-        #     # print("Action val: ", action_val)
-        #     # print("Best: ", best_action)
-        #     # print("Best action val: ", best_action_val)
-        #     print("Sprimes: ",[s.coords() for s in s_primes])
-        #     print("Sprime values: ",[self._v.value(s_prime.coords()[0], s_prime.coords()[1]) for s_prime in s_primes])
-        #     print("rewards: ",rewards)
-        #     print("probs: ",probs)
 
         for s_prime, r, p in zip(s_primes, rewards, probs):
+            self.iterations += 1
             if s_prime is None:
                 # case where current state is the goal state
                 new_value += r
@@ -109,7 +100,6 @@ class ValueIterator(DynamicProgrammingBase):
         steps = 0
         while True:
             delta = 0
-            self.iterations += 1
             # a = set()
             for x in range(self._environment.map().width()):
                 for y in range(self._environment.map().height()):
@@ -139,7 +129,7 @@ class ValueIterator(DynamicProgrammingBase):
 
             if delta < self.theta():
                 break
-        print(f"Computed optimal value function in {steps} steps")
+        # print(f"Computed optimal value function in {steps} steps")
 
     def greedy(self, state):
         best_action = -1
