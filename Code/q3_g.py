@@ -19,7 +19,7 @@ from joblib import dump
 if __name__ == '__main__':
 
     # Get the map for the scenario
-    #airport_map, drawer_height = three_row_scenario()
+    # airport_map, drawer_height = three_row_scenario()
     airport_map, drawer_height = full_scenario()
 
     # Set up the environment for the robot driving around
@@ -28,10 +28,11 @@ if __name__ == '__main__':
     # Configure the process model
     # airport_environment.set_nominal_direction_probability(1.0)
     airport_environment.set_nominal_direction_probability(0.8)
-
+    print("Policy Iterator:")
     # Create the policy iterator
     policy_solver = PolicyIterator(airport_environment)
     policy_solver.set_max_policy_evaluation_steps_per_iteration(10)
+    policy_solver.set_theta(2)
 
     # Set up initial state
     policy_solver.initialize()
@@ -46,17 +47,20 @@ if __name__ == '__main__':
 
     # Compute the solution
     v, pi = policy_solver.solve_policy()
+    print(f"Policy iteration total iteration: {policy_solver.iterations}")
 
     # Save screen shot; this is in the current directory
     policy_drawer.save_screenshot("policy_iteration_results.pdf")
+    value_function_drawer.save_screenshot("policy_iteration_values.pdf")
 
-    # # Wait for a key press
+    # Wait for a key press
     # value_function_drawer.wait_for_key_press()
 
     # Q3i: Add code to evaluate value iteration down here.
-
+    print("Value Iterator:")
     # Create the policy iterator
     policy_solver = ValueIterator(airport_environment)
+    policy_solver.set_theta(1e-1)
 
     # Set up initial state
     policy_solver.initialize()
@@ -74,6 +78,6 @@ if __name__ == '__main__':
 
     # Save screen shot; this is in the current directory
     policy_drawer.save_screenshot("value_iterator_results.pdf")
+    value_function_drawer.save_screenshot("value_iterator_values.pdf")
 
-    # Wait for a key press
-    value_function_drawer.wait_for_key_press()
+    print(f"Value iteration total iteration: {policy_solver.iterations}")

@@ -36,7 +36,7 @@ class PolicyIterator(DynamicProgrammingBase):
     def evaluate_policy(self):
         self._evaluate_policy()
 
-        #v = copy.deepcopy(self._v)
+        # v = copy.deepcopy(self._v)
 
         return self._v
 
@@ -44,14 +44,6 @@ class PolicyIterator(DynamicProgrammingBase):
         if not self._environment.map().cell(x, y).is_terminal():
             return self._environment.action_space.n - 2
         return self._environment.action_space.n
-
-    def loadComputed(self):
-        self._pi = load("../save/Q3/POLYITER-policy0_8")
-        self._v = load("../save/Q3/POLYITER-values0_8")
-
-    def saveComputed(self):
-        dump(self._v, "../save/Q3/POLYITER-values0_8")
-        dump(self._pi, "../save/Q3/POLYITER-policy0_8")
 
     def solve_policy(self):
         self._evaluatorRunCount = 0
@@ -87,10 +79,6 @@ class PolicyIterator(DynamicProgrammingBase):
 
             policy_iteration_step += 1
 
-        # self.loadComputed()
-
-        # self.saveComputed()
-
         # Draw one last time to clear any transients which might
         # draw changes
         if self._policy_drawer is not None:
@@ -115,7 +103,6 @@ class PolicyIterator(DynamicProgrammingBase):
         iteration = 0
 
         while True:
-            self.iterations += 1
             delta = 0
 
             # Sweep systematically over all the states
@@ -142,17 +129,10 @@ class PolicyIterator(DynamicProgrammingBase):
                     s_prime, r, p = environment.next_state_and_reward_distribution(
                         cell, self._pi.action(x, y))
 
-                    # if x == 51 and y == 21:
-                    #     print("Value of current state: ", old_v)
-                    #     print("Action chosen: ", self._pi.action(x, y))
-                    #     print("sPrimes: ", [s.coords() for s in s_prime])
-                    #     print("rewards: ", r)
-                    #     print("probabilities: ", p)
-                    #     print("--------------------------------")
-
                     # Sum over the rewards
                     new_v = 0
                     for t in range(len(p)):
+                        self.iterations += 1
                         sc = s_prime[t].coords()
                         new_v += p[t] * (r[t] + self._gamma *
                                          self._v.value(sc[0], sc[1]))
@@ -209,6 +189,7 @@ class PolicyIterator(DynamicProgrammingBase):
 
                     new_v = 0
                     for i in range(len(p)):
+                        self.iterations += 1
                         sc = s_prime[i].coords()
                         new_v += p[i] * (r[i] + self._gamma *
                                          self._v.value(sc[0], sc[1]))
