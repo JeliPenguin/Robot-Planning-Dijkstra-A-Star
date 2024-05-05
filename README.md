@@ -13,7 +13,7 @@ The project uses simulation data to manage an autonomous robot tasked with clean
 - **Breadth-First Search (BFS)**
 - **Depth-First Search (DFS)**
 - **Dijkstra’s Algorithm**
-- **A-Star (A*) Algorithm**
+- **A-Star (A\*) Algorithm**
 - **Markov Decision Processes (FMDP)** for handling uncertainties in robot motion.
 
 ## Getting Started
